@@ -256,22 +256,26 @@ if __name__ == "__main__":
     print(f"Match: {'PASS' if DT == PT else 'FAIL'}")
 
     # ── Plaintext Avalanche ───────────────────────────────────────────────────
+    # ── Plaintext Avalanche ───────────────────────────────────────────────────
     print("\n=== Avalanche: 1-bit Plaintext Change (SHA-BUL) ===")
     PT2 = "123456ABCD132537"
-    CT2 = encrypt(PT2, rkb, rk_hex)
+    rounds_pt1 = []
+    rounds_pt2 = []
+    CT2 = encrypt(PT2, rkb, rk_hex, collect=rounds_pt2)
+    encrypt(PT, rkb, rk_hex, collect=rounds_pt1)
     pt_diff = bit_diff(hex2bin(CT), hex2bin(CT2))
     print(f"PT1: {PT} -> {CT}")
     print(f"PT2: {PT2} -> {CT2}")
     print(f"Bits differ: {pt_diff}/64 ({pt_diff/64*100:.1f}%)")
 
-    print(f"\n{'Bit':>4}  {'Differ':>9}  {'%':>6}")
+    print(f"\n{'Rnd':>3}  {'Bits Differ':>11}  {'%':>6}")
     print("-" * 25)
-    for bit in [0, 8, 16, 24, 32, 40, 48, 56, 63]:
-        bb = hex2bin(PT)
-        fb = bb[:bit] + ('1' if bb[bit]=='0' else '0') + bb[bit+1:]
-        cf = encrypt(bin2hex(fb), rkb, rk_hex)
-        d  = bit_diff(hex2bin(CT), hex2bin(cf))
-        print(f"{bit:>4}  {d:>6} / 64  {d/64*100:>5.1f}%")
+    for i in range(16):
+        l1, r1 = rounds_pt1[i]
+        l2, r2 = rounds_pt2[i]
+        d = bit_diff(hex2bin(l1) + hex2bin(r1), hex2bin(l2) + hex2bin(r2))
+        print(f"{i+1:>3}  {d:>6} / 64  {d/64*100:>5.1f}%")
+    print(f"CT   {pt_diff:>6} / 64  {pt_diff/64*100:>5.1f}%")
 
     # ── Key Avalanche ─────────────────────────────────────────────────────────
     print("\n=== Avalanche: 1-bit Key Change (SHA-BUL) ===")
