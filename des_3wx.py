@@ -212,7 +212,7 @@ def decrypt(ct_hex, rkb, rk_hex): # ══════════════�
 if __name__ == "__main__":
     KEY        = "AABB09182736CCDD"  # ======================================== HARD CODED MASTER KEY
     PT         = "123456ABCD132536"
-    ITERATIONS = 100_000             # ======================================== MOD4: tune this (higher = slower brute-force)
+    ITERATIONS = 100_000             # ======================================== MOD4: adjust depending on needs (higher = slower brute-force)
 
     # ── MOD1: Key Stretching ──────────────────────────────────────────────────
     print("=== MOD4: Key Stretching ===")
@@ -223,7 +223,7 @@ if __name__ == "__main__":
     t_end        = time.time()
     print(f"Stretched Key : {STRETCHED_KEY}  ({ITERATIONS:,} SHA-256 iterations)")
     print(f"Stretch Time  : {(t_end - t_start)*1000:.1f} ms")
-    print(f"Effective brute-force speed: ~{1_000_000_000 // ITERATIONS:,} guesses/sec  (vs 1,000,000,000 without stretching)")
+    print(f"Effective brute-force speed: ~{1_000_000_000 // ITERATIONS:,}") 
 
     # ── All subkeys now derived from STRETCHED_KEY, not raw KEY ──────────────
     rkb, rk_hex = generate_subkeys(STRETCHED_KEY)  # ========================== MOD1: use stretched key here
