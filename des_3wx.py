@@ -215,7 +215,7 @@ if __name__ == "__main__":
     ITERATIONS = 100_000             # ======================================== MOD4: adjust depending on needs (higher = slower brute-force)
 
     # ── MOD1: Key Stretching ──────────────────────────────────────────────────
-    print("=== MOD4: Key Stretching ===")
+    print("=== MOD1: Key Stretching ===")
     print(f"Original Key  : {KEY}")
     import time
     t_start      = time.time()
@@ -231,7 +231,7 @@ if __name__ == "__main__":
     wk2 = make_wk2(rkb)     # ================================================ CALL WK2 CREATION FUNCTION
 
     # ── Header ────────────────────────────────────────────────────────────────
-    print("\n=== DES-3WX (MOD1 + MOD2 + MOD3 + MOD4) ===")
+    print("\n=== SHA-BUL (MOD1 + MOD2 + MOD3 + MOD4 + MOD5) ===")
     print(f"Key (original) : {KEY}")
     print(f"Key (stretched): {STRETCHED_KEY}")
     print(f"PT             : {PT}")
@@ -246,8 +246,8 @@ if __name__ == "__main__":
     print(f"DT  : {DT_STD}")
     print(f"Match: {'PASS' if DT_STD == PT else 'FAIL'}")
 
-    # ── DES-3WX ───────────────────────────────────────────────────────────────
-    print("\n=== DES-3WX Encryption ===")
+    # ── SHA-BUL ───────────────────────────────────────────────────────────────
+    print("\n=== SHA-BUL Encryption ===")
     rounds_mod = []
     CT = encrypt(PT, rkb, rk_hex, collect=rounds_mod)
     DT = decrypt(CT, rkb, rk_hex)
@@ -256,7 +256,7 @@ if __name__ == "__main__":
     print(f"Match: {'PASS' if DT == PT else 'FAIL'}")
 
     # ── Plaintext Avalanche ───────────────────────────────────────────────────
-    print("\n=== Avalanche: 1-bit Plaintext Change (DES-3WX) ===")
+    print("\n=== Avalanche: 1-bit Plaintext Change (SHA-BUL) ===")
     PT2 = "123456ABCD132537"
     CT2 = encrypt(PT2, rkb, rk_hex)
     pt_diff = bit_diff(hex2bin(CT), hex2bin(CT2))
@@ -274,7 +274,7 @@ if __name__ == "__main__":
         print(f"{bit:>4}  {d:>6} / 64  {d/64*100:>5.1f}%")
 
     # ── Key Avalanche ─────────────────────────────────────────────────────────
-    print("\n=== Avalanche: 1-bit Key Change (DES-3WX) ===")
+    print("\n=== Avalanche: 1-bit Key Change (SHA-BUL) ===")
     kb   = hex2bin(KEY)
     fk   = kb[:8] + ('1' if kb[8]=='0' else '0') + kb[9:]   # takes bit 8 then flips == if 1 > 0 then binary
     KEY2 = bin2hex(fk)
